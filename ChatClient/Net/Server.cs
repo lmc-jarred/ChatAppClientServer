@@ -12,16 +12,16 @@ namespace ChatClient.Net
     {
         TcpClient _client;
 
-        public PacketReader PacketReader;
+        public PacketReader? PacketReader;
 
-        public event Action ConnectedEvent;
+        public event Action? ConnectedEvent;
 
         public Server()
         {
             _client = new TcpClient();
         }
 
-        public void ConnectToServer(string username)
+        public void ConnectToServer(string? username)
         {
             if (!_client.Connected)
             {
@@ -45,6 +45,9 @@ namespace ChatClient.Net
         {
             Task.Run(() => // TODO Advanced - Keep track of thread
             {
+                if (PacketReader == null)
+                    throw new ApplicationException("Unable to read packets - PacketReader is null");
+
                 while (true)
                 {
                     byte opcode = PacketReader.ReadByte(); // TODO Advanced - Add ReadOpCode method that reads and returns first byte from stream
