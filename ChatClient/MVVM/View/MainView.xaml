@@ -40,9 +40,11 @@
             <StackPanel Orientation="Horizontal">
                 <TextBox Height="55"
                          Width="545"
-                         VerticalContentAlignment="Center" />
+                         VerticalContentAlignment="Center"
+                         Text="{Binding Message, UpdateSourceTrigger=PropertyChanged}" />
                 <Button Width="55"
-                        Content="Send" />
+                        Content="Send"
+                        Command="{Binding SendChatMessageCommand}" />
 
             </StackPanel>
             

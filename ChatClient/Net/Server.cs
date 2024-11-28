@@ -63,5 +63,14 @@ namespace ChatClient.Net
                 }
             });
         }
+
+        public void SendChatMessage(string? message)
+        {
+            PacketBuilder messagePacket = new PacketBuilder();
+            messagePacket.WriteOpCode(5); //Client sends server a message
+            messagePacket.WriteMessage(message ?? string.Empty);
+
+            _client.Client.Send(messagePacket.GetPacketBytes());
+        }
     }
 }
