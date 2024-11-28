@@ -12,6 +12,10 @@ namespace ChatClient.Net
     {
         TcpClient _client;
 
+        public PacketReader PacketReader;
+
+        public event Action ConnectedEvent;
+
         public Server()
         {
             _client = new TcpClient();
@@ -22,11 +26,39 @@ namespace ChatClient.Net
             if (!_client.Connected)
             {
                 _client.Connect("127.0.0.1", 7891);
-                PacketBuilder connectionPacket = new PacketBuilder();
-                connectionPacket.WriteOpCode(0);
-                connectionPacket.WriteString(username);
-                _client.Client.Send(connectionPacket.GetPacketBytes());
+                PacketReader = new PacketReader(_client.GetStream());
+
+                if (!string.IsNullOrWhiteSpace(username))
+                {
+                    PacketBuilder connectionPacket = new PacketBuilder();
+                    connectionPacket.WriteOpCode(0); //Client connect to server
+                    connectionPacket.WriteMessage(username);
+
+                    _client.Client.Send(connectionPacket.GetPacketBytes());
+                }
+
+                ReadPackets();
             }
+        }
+
+        private void ReadPackets()
+        {
+            Task.Run(() => // TODO Advanced - Keep track of thread
+            {
+                while (true)
+                {
+                    byte opcode = PacketReader.ReadByte(); // TODO Advanced - Add ReadOpCode method that reads and returns first byte from stream
+                    switch (opcode)
+                    {
+                        case 1: //Server broadcast to client
+                            ConnectedEvent?.Invoke();
+                            break;
+                        default:
+                            Console.WriteLine($"Received opcode {opcode}");
+                            break;
+                    }
+                }
+            });
         }
     }
 }

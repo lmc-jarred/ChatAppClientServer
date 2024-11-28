@@ -18,7 +18,13 @@ namespace ChatClient.MVVM.ViewModel
         public MainViewModel()
         {
             _server = new Server();
+            _server.ConnectedEvent += UserConnected;
             ConnectToServerCommand = new RelayCommand(o => _server.ConnectToServer(Username), o => !string.IsNullOrWhiteSpace(Username));
+        }
+
+        private void UserConnected()
+        {
+            throw new NotImplementedException();
         }
     }
 }

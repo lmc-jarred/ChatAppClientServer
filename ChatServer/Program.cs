@@ -33,7 +33,7 @@ namespace ChatServer
                 foreach (Client user2 in _users)
                 {
                     PacketBuilder broadcastPacket = new PacketBuilder();
-                    broadcastPacket.WriteOpCode(1);
+                    broadcastPacket.WriteOpCode(1); //Server broadcast to client
                     broadcastPacket.WriteMessage(user2.Username);
                     broadcastPacket.WriteMessage(user2.UID.ToString());
 
