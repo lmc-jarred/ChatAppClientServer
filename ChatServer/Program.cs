@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using ChatServer.Net.IO;
 
 namespace ChatServer
 {
@@ -21,7 +22,23 @@ namespace ChatServer
                 Client clientInfo = new Client(_listener.AcceptTcpClient());
                 _users.Add(clientInfo);
 
-                // TODO - Broadcast the connection to everyone on the server
+                BroadcastConnection();
+            }
+        }
+
+        static void BroadcastConnection()
+        {
+            foreach (Client user1 in _users)
+            {
+                foreach (Client user2 in _users)
+                {
+                    PacketBuilder broadcastPacket = new PacketBuilder();
+                    broadcastPacket.WriteOpCode(1);
+                    broadcastPacket.WriteMessage(user2.Username);
+                    broadcastPacket.WriteMessage(user2.UID.ToString());
+
+                    user1.ClientSocket.Client.Send(broadcastPacket.GetPacketBytes());
+                }
             }
         }
     }
