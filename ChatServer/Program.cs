@@ -26,6 +26,8 @@ namespace ChatServer
             }
         }
 
+        public static void ConsoleWriteLine(string msg) => Console.WriteLine($"[{DateTime.UtcNow}]: {msg}");
+
         static void BroadcastConnection()
         {
             foreach (Client user1 in _users)
@@ -39,6 +41,18 @@ namespace ChatServer
 
                     user1.ClientSocket.Client.Send(broadcastPacket.GetPacketBytes());
                 }
+            }
+        }
+
+        public static void BroadcastMessage(string message)
+        {
+            foreach (Client user in _users)
+            {
+                PacketBuilder messagePacket = new PacketBuilder();
+                messagePacket.WriteOpCode(5);
+                messagePacket.WriteMessage(message);
+
+                user.ClientSocket.Client.Send(messagePacket.GetPacketBytes());
             }
         }
     }

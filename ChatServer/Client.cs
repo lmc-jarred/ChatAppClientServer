@@ -27,7 +27,34 @@ namespace ChatServer
 
             Username = _packetReader.ReadMessage();
 
-            Console.WriteLine($"[{DateTime.UtcNow}]: Client has connected with the username: {Username}");
+            Program.ConsoleWriteLine($"Client has connected with the username: {Username} ({UID})");
+
+            Task.Run(() => ProcessPackets());
+        }
+
+        void ProcessPackets()
+        {
+            while (true)
+            {
+                try
+                {
+                    // TODO Advanced - Not using events on server side because we're only reading one type of packet
+
+                    byte opcode = _packetReader.ReadByte();
+                    switch (opcode)
+                    {
+                        case 5: //Client sends server a message
+                            string message = _packetReader.ReadMessage();
+                            Program.ConsoleWriteLine($"Received message from {Username}: {message}");
+                            Program.BroadcastMessage(message);
+                            break;
+                    }
+                }
+                catch (Exception ex) // TODO Advanced - Check for NetworkException specifically
+                {
+                    throw;
+                }
+            }
         }
     }
 }
