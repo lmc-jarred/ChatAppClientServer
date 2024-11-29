@@ -52,7 +52,10 @@ namespace ChatServer
                 }
                 catch (Exception ex) // TODO Advanced - Check for NetworkException specifically
                 {
-                    throw;
+                    Program.ConsoleWriteLine($"Client {Username} ({UID}) has disconnected");
+                    Program.BroadcastDisconnect(UID);
+                    ClientSocket.Close();
+                    break;
                 }
             }
         }

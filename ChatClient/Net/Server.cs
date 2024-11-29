@@ -53,7 +53,7 @@ namespace ChatClient.Net
                     byte opcode = PacketReader.ReadByte(); // TODO Advanced - Add ReadOpCode method that reads and returns first byte from stream
                     switch (opcode)
                     {
-                        case 1: //Server broadcast to client
+                        case 1: //Server broadcast connection to client
                             ConnectedEvent?.Invoke();
                             break;
                         default:

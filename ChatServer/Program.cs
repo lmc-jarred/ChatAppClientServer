@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using ChatServer.Net.IO;
@@ -35,13 +36,33 @@ namespace ChatServer
                 foreach (Client user2 in _users)
                 {
                     PacketBuilder broadcastPacket = new PacketBuilder();
-                    broadcastPacket.WriteOpCode(1); //Server broadcast to client
+                    broadcastPacket.WriteOpCode(1); //Server broadcast connection to client
                     broadcastPacket.WriteMessage(user2.Username);
                     broadcastPacket.WriteMessage(user2.UID.ToString());
 
                     user1.ClientSocket.Client.Send(broadcastPacket.GetPacketBytes());
                 }
             }
+        }
+
+        public static void BroadcastDisconnect(Guid uid) // TODO - Pass Guid instead of string
+        {
+            Client? disconnectedUser = _users.Where(x => x.UID == uid).FirstOrDefault();
+            if (disconnectedUser == null)
+                return;
+
+            _users.Remove(disconnectedUser);
+
+            foreach (Client user in _users)
+            {
+                PacketBuilder broadcastPacket = new PacketBuilder();
+                broadcastPacket.WriteOpCode(10); //Server broadcast disconnect to client
+                broadcastPacket.WriteMessage(uid.ToString());
+
+                user.ClientSocket.Client.Send(broadcastPacket.GetPacketBytes());
+            }
+
+            BroadcastMessage($"{disconnectedUser.Username} disconnected");
         }
 
         public static void BroadcastMessage(string message)
