@@ -15,6 +15,8 @@ namespace ChatClient.Net
         public PacketReader? PacketReader;
 
         public event Action? ConnectedEvent;
+        public event Action? MsgReceivedEvent;
+        public event Action? UserDisconnectEvent;
 
         public Server()
         {
@@ -56,6 +58,15 @@ namespace ChatClient.Net
                         case 1: //Server broadcast connection to client
                             ConnectedEvent?.Invoke();
                             break;
+
+                        case 5: //Client sends a message
+                            MsgReceivedEvent?.Invoke();
+                            break;
+
+                        case 10: //Server broadcast disconnect to client
+                            UserDisconnectEvent?.Invoke();
+                            break;
+
                         default:
                             Console.WriteLine($"Received opcode {opcode}");
                             break;

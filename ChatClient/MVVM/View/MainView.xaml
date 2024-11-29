@@ -35,7 +35,8 @@
         </DockPanel>
 
         <StackPanel Grid.Column="1">
-            <ListView Height="380" />
+            <ListView Height="380"
+                      ItemsSource="{Binding ChatMessages}"/>
 
             <StackPanel Orientation="Horizontal">
                 <TextBox Height="55"
