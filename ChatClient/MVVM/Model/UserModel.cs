@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ChatClient.MVVM.Model
+﻿namespace ChatClient.MVVM.Model
 {
     public class UserModel
     {
+        #region Properties
         public string? UID { get; set; }
         public string? Username { get; set; }
+        #endregion
     }
 }

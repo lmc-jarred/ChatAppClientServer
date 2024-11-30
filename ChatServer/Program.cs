@@ -7,15 +7,16 @@ using ChatServer.Net.IO;
 
 namespace ChatServer
 {
-    class Program
+    internal class Program
     {
-        private static List<Client> _users;
-        static TcpListener _listener;
+        #region Fields
+        private readonly static List<Client> _users = new List<Client>();
+        private readonly static TcpListener _listener = new TcpListener(IPAddress.Parse("127.0.0.1"), 7891);
+        #endregion
 
-        static void Main(string[] args)
+        #region Entry Point
+        private static void Main(string[] args)
         {
-            _users = new List<Client>();
-            _listener = new TcpListener(IPAddress.Parse("127.0.0.1"), 7891);
             _listener.Start();
 
             while (true)
@@ -26,10 +27,12 @@ namespace ChatServer
                 BroadcastConnection();
             }
         }
+        #endregion
 
+        #region Public Methods
         public static void ConsoleWriteLine(string msg) => Console.WriteLine($"[{DateTime.UtcNow}]: {msg}");
 
-        static void BroadcastConnection()
+        public static void BroadcastConnection()
         {
             foreach (Client user1 in _users)
             {
@@ -45,7 +48,7 @@ namespace ChatServer
             }
         }
 
-        public static void BroadcastDisconnect(Guid uid) // TODO - Pass Guid instead of string
+        public static void BroadcastDisconnect(Guid uid)
         {
             Client? disconnectedUser = _users.Where(x => x.UID == uid).FirstOrDefault();
             if (disconnectedUser == null)
@@ -76,5 +79,6 @@ namespace ChatServer
                 user.ClientSocket.Client.Send(messagePacket.GetPacketBytes());
             }
         }
+        #endregion
     }
 }

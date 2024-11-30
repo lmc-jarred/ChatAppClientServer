@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading.Tasks;
 using ChatServer.Net.IO;
 
@@ -10,12 +7,17 @@ namespace ChatServer
 {
     internal class Client
     {
-        private PacketReader _packetReader;
+        #region Fields
+        private readonly PacketReader _packetReader;
+        #endregion
 
+        #region Properties
         public Guid UID { get; set; }
         public string Username { get; set; }
         public TcpClient ClientSocket { get; set; }
+        #endregion
 
+        #region Constructor
         public Client(TcpClient client)
         {
             ClientSocket = client;
@@ -31,8 +33,10 @@ namespace ChatServer
 
             Task.Run(() => ProcessPackets());
         }
+        #endregion
 
-        void ProcessPackets()
+        #region Private Helper Methods
+        private void ProcessPackets()
         {
             while (true)
             {
@@ -50,7 +54,7 @@ namespace ChatServer
                             break;
                     }
                 }
-                catch (Exception ex) // TODO Advanced - Check for NetworkException specifically
+                catch (Exception) // TODO Advanced - Check for NetworkException specifically
                 {
                     Program.ConsoleWriteLine($"Client {Username} ({UID}) has disconnected");
                     Program.BroadcastDisconnect(UID);
@@ -59,5 +63,6 @@ namespace ChatServer
                 }
             }
         }
+        #endregion
     }
 }

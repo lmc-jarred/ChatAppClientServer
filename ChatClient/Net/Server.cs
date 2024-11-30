@@ -1,28 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net.Sockets;
 using ChatClient.Net.IO;
 
 namespace ChatClient.Net
 {
     internal class Server
     {
-        TcpClient _client;
+        #region Fields
+        private readonly TcpClient _client;
+        #endregion
 
+        #region Properties
         public PacketReader? PacketReader;
+        #endregion
 
+        #region Events
         public event Action? ConnectedEvent;
         public event Action? MsgReceivedEvent;
         public event Action? UserDisconnectEvent;
+        #endregion
 
+        #region Constructor
         public Server()
         {
             _client = new TcpClient();
         }
+        #endregion
 
+        #region Public Methods
         public void ConnectToServer(string? username)
         {
             if (!_client.Connected)
@@ -43,6 +47,17 @@ namespace ChatClient.Net
             }
         }
 
+        public void SendChatMessage(string? message)
+        {
+            PacketBuilder messagePacket = new PacketBuilder();
+            messagePacket.WriteOpCode(5); //Client sends server a message
+            messagePacket.WriteMessage(message ?? string.Empty);
+
+            _client.Client.Send(messagePacket.GetPacketBytes());
+        }
+        #endregion
+
+        #region Private Helper Methods
         private void ReadPackets()
         {
             Task.Run(() => // TODO Advanced - Keep track of thread
@@ -74,14 +89,6 @@ namespace ChatClient.Net
                 }
             });
         }
-
-        public void SendChatMessage(string? message)
-        {
-            PacketBuilder messagePacket = new PacketBuilder();
-            messagePacket.WriteOpCode(5); //Client sends server a message
-            messagePacket.WriteMessage(message ?? string.Empty);
-
-            _client.Client.Send(messagePacket.GetPacketBytes());
-        }
+        #endregion
     }
 }

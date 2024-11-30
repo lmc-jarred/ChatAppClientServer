@@ -1,21 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ChatServer.Net.IO
 {
-    internal class PacketBuilder
+    internal class PacketBuilder // TODO - Link to ChatClient as well, or make Chat.Core project
     {
-        MemoryStream _ms;
+        #region Fields
+        private readonly MemoryStream _ms;
+        #endregion
 
+        #region Constructor
         public PacketBuilder()
         {
             _ms = new MemoryStream();
         }
+        #endregion
 
+        #region Public Methods
         public void WriteOpCode(byte opcode)
         {
             _ms.WriteByte(opcode);
@@ -28,5 +30,6 @@ namespace ChatServer.Net.IO
         }
 
         public byte[] GetPacketBytes() => _ms.ToArray();
+        #endregion
     }
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using ChatClient.MVVM.Core;
 using ChatClient.MVVM.Model;
@@ -13,15 +8,20 @@ namespace ChatClient.MVVM.ViewModel
 {
     public class MainViewModel
     {
-        private Server _server;
+        #region Fields
+        private readonly Server _server;
+        #endregion
 
+        #region Properties
         public RelayCommand ConnectToServerCommand { get; set; }
         public RelayCommand SendChatMessageCommand { get; set; }
         public ObservableCollection<UserModel> Users { get; set; }
         public ObservableCollection<string> ChatMessages { get; set; }
         public string? Username { get; set; }
         public string? Message { get; set; }
+        #endregion
 
+        #region Constructor
         public MainViewModel()
         {
             _server = new Server();
@@ -35,7 +35,9 @@ namespace ChatClient.MVVM.ViewModel
             Users = new ObservableCollection<UserModel>();
             ChatMessages = new ObservableCollection<string>();
         }
+        #endregion
 
+        #region Private Helper Methods
         private void UserConnected()
         {
             if (_server.PacketReader == null)
@@ -73,5 +75,6 @@ namespace ChatClient.MVVM.ViewModel
 
             Application.Current.Dispatcher.Invoke(() => Users.Remove(user));
         }
+        #endregion
     }
 }
